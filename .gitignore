@@ -209,3 +209,5 @@ __marimo__/
 
 # Others 
 *.DS_Store
+/notebooks/.ipynb_checkpoints
+/notebooks/data/
