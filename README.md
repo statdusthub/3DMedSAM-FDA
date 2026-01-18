@@ -21,3 +21,15 @@ A Frequency-based Dual-Path Adapter for 3D Medical Image Segmentation
 
 <img width="700" alt="framework" align="center" src="https://github.com/user-attachments/assets/c6aa6836-5164-4cdb-bf3d-193921694538" />
 
+## Results
+
+<img width="700" alt="실험결과" src="https://github.com/user-attachments/assets/b771b3f9-595c-4d20-a463-875984a5e049" />
+
+실험 결과, 제안한 3DMedSAM-FDA는 장기별 특성에 따라 기존 방법 대비 일관되고 유의미한 성능 향상을 보였다.
+신장암 및 췌장암 분할에서는 기존 3D SAM Adapter 대비 평균적으로 각각 +5.1%p, +0.1%p의 Dice 성능 향상을 달성하면서도, 전역 의미 정보를 유지하여 안정적인 분할 결과를 확인하였다.
+
+특히 간암 분할에서는 포인트 수가 증가할수록 성능 향상이 두드러지게 나타났으며, 10-point 설정 기준으로 기존 3D SAM Adapter뿐만 아니라 nnU-Net 대비서도 1.87%p 높은 Dice 점수를 기록하였다. 이는 전역 문맥 정보와 국소 구조 정보를 효과적으로 결합한 이중 경로 구조의 강점을 보여준다.
+
+결장암 분할에서는 모든 포인트 설정에서 기존 방법 대비 큰 폭의 성능 개선을 달성하였다. 기존 모델들이 충분한 성능을 보이지 못한 복잡하고 작은 병변 환경에서도, 제안한 방법은 주파수 기반 국소 경로를 통한 경계 및 미세 구조 보강을 통해 분할 성능을 안정적으로 향상시켰다.
+
+마지막으로, 제안한 방법은 **기존 3D SAM Adapter(25.46M)와 유사한 수준의 파라미터 수(29.02M)**를 유지하면서도 이러한 성능 향상을 달성하여, 경량화된 구조 하에서도 표현력을 효과적으로 확장할 수 있음을 입증하였다.
