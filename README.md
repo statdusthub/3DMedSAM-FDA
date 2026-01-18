@@ -17,4 +17,7 @@ A Frequency-based Dual-Path Adapter for 3D Medical Image Segmentation
    - 입력 특징을 주파수 도메인으로 변환 (FFT).
    - 반경 기반 마스크 $M(r)$를 적용하여 고주파 성분(경계 정보) 증폭.
    - 공간 도메인으로 복원 (IFFT) 후 $1 \times 1 \times 1$ Conv 적용.
-3. Adaptive Fusion: 전역 경로의 정보를 바탕으로 국소 경로 정보의 반영 비율을 조정하여 결합합니다. 
+3. Adaptive Fusion: 전역 경로의 정보를 바탕으로 국소 경로 정보의 반영 비율을 조정하여 결합합니다.
+
+<img width="700" alt="framework" align="center" src="https://github.com/user-attachments/assets/c6aa6836-5164-4cdb-bf3d-193921694538" />
+
