@@ -1,6 +1,7 @@
 # 3DMedSAM-FDA
-A Frequency-based Dual-Path Adapter for 3D Medical Image Segmentation
-3DMedSAM-FDA는 기존 3D SAM Adapter가 전역적인 의미 정보에 비해 국소 구조와 경계 정보를 충분히 반영하지 못하는 한계를 극복하기 위해 제안되었습니다. 우리는 전역 문맥 정보와 주파수 기반의 국소 정보를 병렬적으로 처리하는 새로운 이중 경로 어댑터(Dual-Path Adapter)를 소개합니다.
+: A Frequency-based Dual-Path Adapter for 3D Medical Image Segmentation
+
+**3DMedSAM-FDA**는 기존 3D SAM Adapter가 전역적인 의미 정보에 비해 국소 구조와 경계 정보를 충분히 반영하지 못하는 한계를 극복하기 위해 제안되었습니다. 우리는 전역 문맥 정보와 주파수 기반의 국소 정보를 병렬적으로 처리하는 새로운 이중 경로 어댑터(Dual-Path Adapter)를 소개합니다.
 
 ## Abstract
 프롬프트 기반 분할 모델(Segment Anything Model, SAM)을 3차원 의료 영상에 적용하려는 시도가 늘어나고 있습니다. 하지만 기존 3D 어댑터 구조는 종양과 같이 크기가 작고 경계가 불명확한 병변을 정밀하게 분할하는 데 한계가 있습니다.
@@ -12,23 +13,37 @@ A Frequency-based Dual-Path Adapter for 3D Medical Image Segmentation
 
 ## Architecture
 전체 프레임워크는 이미지 인코더, 프롬프트 인코더, 마스크 디코더로 구성되며, 제안하는 어댑터는 다음과 같이 동작합니다:
-1. Global Context Path: $3 \times 3 \times 3$ Depth-wise Conv를 사용하여 3차원 형태와 장기 문맥 정보를 포착합니다
-2. Local Frequency Path:
+1. Global Context Path (Spatial Domain): $3 \times 3 \times 3$ Depth-wise Conv를 사용하여 3차원 형태와 장기 문맥 정보를 포착합니다
+3. Local Textural Path (Frequency Domain):
    - 입력 특징을 주파수 도메인으로 변환 (FFT).
    - 반경 기반 마스크 $M(r)$를 적용하여 고주파 성분(경계 정보) 증폭.
    - 공간 도메인으로 복원 (IFFT) 후 $1 \times 1 \times 1$ Conv 적용.
-3. Adaptive Fusion: 전역 경로의 정보를 바탕으로 국소 경로 정보의 반영 비율을 조정하여 결합합니다.
+4. Adaptive Gated Fusion: 전역 경로의 정보를 바탕으로 국소 경로 정보의 반영 비율을 조정하여 결합합니다.
 
-<img width="700" alt="framework" align="center" src="https://github.com/user-attachments/assets/c6aa6836-5164-4cdb-bf3d-193921694538" />
+<p align="center">
+<img width="700" alt="framework" src="https://github.com/user-attachments/assets/c6aa6836-5164-4cdb-bf3d-193921694538" />
+</p>   
 
 ## Results
-<img width="700" alt="실험결과" src="https://github.com/user-attachments/assets/2f187f74-0545-4514-83fc-252112b7a43d" />
+<p align="center">
+<img width="700" alt="실험결과정량" src="https://github.com/user-attachments/assets/2f187f74-0545-4514-83fc-252112b7a43d" />
+</p>
 
-실험 결과, 제안한 3DMedSAM-FDA는 장기별 특성에 따라 기존 방법 대비 일관되고 유의미한 성능 향상을 보였다.
-신장암 및 췌장암 분할에서는 기존 3D SAM Adapter 대비 평균적으로 각각 +5.1%p, +0.1%p의 Dice 성능 향상을 달성하면서도, 전역 의미 정보를 유지하여 안정적인 분할 결과를 확인하였다.
+실험 결과, 제안한 3DMedSAM-FDA는 장기별 특성에 따라 기존 방법 대비 일관되고 유의미한 성능 향상을 보였습니다.
+신장암(Kidney Tumor) 및 췌장암(Pancreas Tumor) 분할에서는 기존 3D SAM Adapter 대비 평균적으로 각각 +5.1%p, +0.1%p의 Dice 성능 향상을 달성하면서도, 전역 의미 정보를 유지하여 안정적인 분할 결과를 확인하였습니다.
 
-특히 간암 분할에서는 포인트 수가 증가할수록 성능 향상이 두드러지게 나타났으며, 10-point 설정 기준으로 기존 3D SAM Adapter뿐만 아니라 nnU-Net 대비서도 1.87%p 높은 Dice 점수를 기록하였다. 이는 전역 문맥 정보와 국소 구조 정보를 효과적으로 결합한 이중 경로 구조의 강점을 보여준다.
+특히 간암(Liver Tumor) 분할에서는 포인트 수가 증가할수록 성능 향상이 두드러지게 나타났으며, 10-point 설정 기준으로 기존 3D SAM Adapter뿐만 아니라 nnU-Net 대비서도 1.87%p 높은 Dice 점수를 기록하였습니다. 이는 전역 문맥 정보와 국소 구조 정보를 효과적으로 결합한 이중 경로 구조의 강점을 보여줍니다. 
 
-결장암 분할에서는 모든 포인트 설정에서 기존 방법 대비 큰 폭의 성능 개선을 달성하였다. 기존 모델들이 충분한 성능을 보이지 못한 복잡하고 작은 병변 환경에서도, 제안한 방법은 주파수 기반 국소 경로를 통한 경계 및 미세 구조 보강을 통해 분할 성능을 안정적으로 향상시켰다.
+결장암 분할(Colon Tumor)에서는 모든 포인트 설정에서 기존 방법 대비 큰 폭의 성능 개선을 달성하였습니다. 기존 모델들이 충분한 성능을 보이지 못한 복잡하고 작은 병변 환경에서도, 제안한 방법은 주파수 기반 국소 경로를 통한 경계 및 미세 구조 보강을 통해 분할 성능을 안정적으로 향상시켰습니다.
 
-마지막으로, 제안한 방법은 **기존 3D SAM Adapter(25.46M)와 유사한 수준의 파라미터 수(29.02M)**를 유지하면서도 이러한 성능 향상을 달성하여, 경량화된 구조 하에서도 표현력을 효과적으로 확장할 수 있음을 입증하였다.
+뿐만 아니라, 제안한 방법은 기존 3D SAM Adapter(25.46M)와 유사한 수준의 파라미터 수(29.02M)를 유지하면서도 이러한 성능 향상을 달성하여, 경량화된 구조 하에서도 표현력을 효과적으로 확장할 수 있음을 입증하였습니다.
+
+<p align="center">
+<img width="600" alt="실험결과정성" src="https://github.com/user-attachments/assets/954407b0-b61e-478e-a5fa-ed916d98c153" />
+</p>
+
+위는 정성적 실험 결과로, 특히 Liver Tumor, Colon Tumor와 같은 미세한 질감 및 경계가 중요한 모달리티에서 기존 3D SAM Adapter 대비 우수한 성능을 보이는 것을 시각화합니다. 
+
+
+
+
